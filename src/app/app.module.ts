@@ -4,6 +4,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CdkScrollableModule } from '@angular/cdk/scrolling';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { MatButtonModule } from '@angular/material/button';
 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
@@ -30,7 +33,10 @@ import { TagSelectComponent } from './tag-select/tag-select.component';
     MatChipsModule,
     MatFormFieldModule,
     MatIconModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CdkScrollableModule,
+    ScrollingModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

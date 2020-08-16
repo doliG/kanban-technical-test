@@ -14,10 +14,12 @@ import {
 export class AppComponent implements OnInit {
   title = 'kanban';
 
+  candidates: Candidate[];
+  availableTags: Set<string> = new Set();
   columns: {
     [name: string]: Candidate[];
   };
-  tags: Set<string> = new Set();
+  visibleItems = 15;
 
   constructor(private http: HttpClient) {}
 
@@ -25,32 +27,37 @@ export class AppComponent implements OnInit {
     this.http
       .get('https://hiring.crew.work/v1/talents')
       .subscribe((res: Array<any>) => {
-        console.time('process time');
-        this.columns = res.reduce((acc, val) => {
-          acc[val.stage]
-            ? acc[val.stage].push(toCandidate(val))
-            : (acc[val.stage] = [toCandidate(val)]);
-          return acc;
-        }, {});
-        // Object.keys(this.columns).forEach((key) => {
-          // this.columns[key] = this.columns[key].slice(0, 10);
-        // });
+        this.candidates = res.map(toCandidate);
+        this.computeColumns();
         for (let candidate of res) {
           for (let tag of candidate.tags) {
-            this.tags.add(tag);
+            this.availableTags.add(tag);
           }
         }
-        console.timeEnd('process time');
-        console.log(this.columns);
       });
+  }
+
+  computeColumns(tags?: string[]) {
+    const filtered = (tags && tags.length)
+      ? this.candidates.filter(candidate => candidateHaveTags(candidate, tags))
+      : this.candidates;
+
+    console.log('computeColumns', tags, filtered.length);
+    this.columns = filtered.reduce((acc, val) => {
+      acc[val.stage]
+        ? acc[val.stage].push(val)
+        : (acc[val.stage] = [val]);
+      return acc;
+    }, {});
   }
 
   drop(event: CdkDragDrop<string[]>) {
     const { previousContainer, container, previousIndex, currentIndex } = event;
-    console.log(event);
     if (previousContainer === container) {
+      // TODO: Make api Call to update Candidate.position
       moveItemInArray(container.data, previousIndex, currentIndex);
     } else {
+      // TODO: Make api Call to update Candidate.stage
       transferArrayItem(
         previousContainer.data,
         container.data,
@@ -59,6 +66,19 @@ export class AppComponent implements OnInit {
       );
     }
   }
+
+  filter(tags: Set<string>) {
+    Object.keys(this.columns).forEach(key => {
+      this.columns[key] = this.columns[key].filter(candidate => {
+        for (const tag of tags) {
+          if (candidate.tags.has(tag)) {
+            return true;
+          }
+        }
+        return false;
+      })
+    })
+  }
 }
 
 function toCandidate(apiCandidate): Candidate {
@@ -66,6 +86,13 @@ function toCandidate(apiCandidate): Candidate {
     ...apiCandidate,
     tags: new Set(apiCandidate.tags),
   };
+}
+
+function candidateHaveTags(candidate: Candidate, tags: string[]) {
+  for (const tag of tags)
+    if (candidate.tags.has(tag))
+      return true
+  return false
 }
 
 interface Candidate {

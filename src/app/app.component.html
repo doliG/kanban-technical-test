@@ -1,18 +1,34 @@
 <app-tag-select
-  [options]="tags"
+  [options]="availableTags"
+  (select)="computeColumns($event)"
 ></app-tag-select>
 
 <div cdkDropListGroup class="kanban">
   <div
+    *ngFor="let column of columns | keyvalue" 
     cdkDropList
     [cdkDropListData]="column.value"
     (cdkDropListDropped)="drop($event)"
     class="kanban--column"
-    *ngFor="let column of columns | keyvalue" 
   >
-    {{ column.key }}
-    <div cdkDrag class="card-container" *ngFor="let candidate of column.value">
-      <mat-card>{{ candidate.firstName }} {{ candidate.lastName }}</mat-card>
+    <div class="kanban--column--title">
+      {{ column.key }}
     </div>
-  </div>
+      <!-- <cdk-virtual-scroll-viewport itemSize="30"> -->
+        <div *ngFor="let candidate of column.value; let index = index" cdkDrag class="card-container">
+        <mat-card *ngIf="index < visibleItems">
+          <mat-card-header>
+            <mat-card-title>{{ candidate.firstName }} {{ candidate.lastName }}</mat-card-title>
+            <mat-card-subtitle>{{ candidate.job }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-chip *ngFor="let tag of candidate.tags">{{ tag }}</mat-chip>
+          </mat-card-content>
+        </mat-card>
+        <button
+          *ngIf="index === visibleItems"
+          (click)="visibleItems = 20 + visibleItems"
+          mat-button>Show 20 more</button>
+      </div>
+    <!-- </cdk-virtual-scroll-viewport> -->
 </div>
