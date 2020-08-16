@@ -62,6 +62,7 @@ export class TagSelectComponent {
     if (index >= 0) {
       this.selectedOptions.splice(index, 1);
     }
+    this.select.emit(this.selectedOptions);
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
