@@ -1,7 +1,7 @@
-# Kanban
+Instructions: https://github.com/crewdotwork/frontend-challenge
+Result: https://kanban-technical-test.surge.sh
 
-TODO:
-- Split search / autocomplete component in a separated module
+# Kanban
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.0.
 
