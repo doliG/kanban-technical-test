@@ -1,5 +1,8 @@
 # Kanban
 
+TODO:
+- Split search / autocomplete component in a separated module
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.0.
 
 ## Development server
