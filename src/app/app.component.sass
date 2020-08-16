@@ -1,3 +1,11 @@
+.app
+  background: #fafafa
+  
+.container
+  max-width: 900px
+  margin: 0rem auto
+  padding: 2rem 1rem
+
 .kanban
   display: flex
   overflow-x: scroll
@@ -9,7 +17,13 @@
     border: 1px solid lightgrey
     border-radius: 8px
     margin: .5rem
-    padding: .5rem
+    padding: 1rem
+    background: white
+
+    &--title
+      font-size: 1.25rem
+      padding-bottom: 1rem
   
 .card-container
   margin-bottom: .5rem
+  cursor: grab

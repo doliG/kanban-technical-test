@@ -1,24 +1,35 @@
-<app-tag-select
-  [options]="availableTags"
-  (select)="computeColumns($event)"
-></app-tag-select>
+<div class="app">
+  <div class="container">
+    <h1>Your talents 🤓</h1>
 
-<div cdkDropListGroup class="kanban">
-  <div
-    *ngFor="let column of columns | keyvalue" 
-    cdkDropList
-    [cdkDropListData]="column.value"
-    (cdkDropListDropped)="drop($event)"
-    class="kanban--column"
-  >
-    <div class="kanban--column--title">
-      {{ column.key }}
-    </div>
+    <app-tag-select
+      [options]="availableTags"
+      (select)="computeColumns($event)"
+    ></app-tag-select>
+  </div>
+
+  <div cdkDropListGroup class="kanban">
+    <div
+      *ngFor="let column of columns | keyvalue"
+      cdkDropList
+      [cdkDropListData]="column.value"
+      (cdkDropListDropped)="drop($event)"
+      class="kanban--column"
+    >
+      <div class="kanban--column--title">
+        {{ column.key }}
+      </div>
       <!-- <cdk-virtual-scroll-viewport itemSize="30"> -->
-        <div *ngFor="let candidate of column.value; let index = index" cdkDrag class="card-container">
+      <div
+        *ngFor="let candidate of column.value; let index = index"
+        cdkDrag
+        class="card-container"
+      >
         <mat-card *ngIf="index < visibleItems">
           <mat-card-header>
-            <mat-card-title>{{ candidate.firstName }} {{ candidate.lastName }}</mat-card-title>
+            <mat-card-title>
+              {{ candidate.firstName }} {{ candidate.lastName }}
+            </mat-card-title>
             <mat-card-subtitle>{{ candidate.job }}</mat-card-subtitle>
           </mat-card-header>
           <mat-card-content>
@@ -28,7 +39,12 @@
         <button
           *ngIf="index === visibleItems"
           (click)="visibleItems = 20 + visibleItems"
-          mat-button>Show 20 more</button>
+          mat-button
+        >
+          Show 20 more
+        </button>
       </div>
-    <!-- </cdk-virtual-scroll-viewport> -->
+      <!-- </cdk-virtual-scroll-viewport> -->
+    </div>
+  </div>
 </div>
