@@ -17,11 +17,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TagSelectComponent } from './tag-select/tag-select.component';
+import { CandidateCardComponent } from './candidate-card/candidate-card.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TagSelectComponent
+    TagSelectComponent,
+    CandidateCardComponent
   ],
   imports: [
     BrowserModule,

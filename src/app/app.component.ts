@@ -5,6 +5,7 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
+import { candidateHaveTags, toCandidate, Candidate } from './Candidate';
 
 @Component({
   selector: 'app-root',
@@ -13,8 +14,6 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
-  title = 'kanban';
-
   candidates: Candidate[];
   availableTags: Set<string> = new Set();
   columns: {
@@ -44,7 +43,6 @@ export class AppComponent implements OnInit {
       ? this.candidates.filter(candidate => candidateHaveTags(candidate, tags))
       : this.candidates;
 
-    console.log('computeColumns', tags, filtered.length);
     this.columns = filtered.reduce((acc, val) => {
       acc[val.stage]
         ? acc[val.stage].push(val)
@@ -55,60 +53,10 @@ export class AppComponent implements OnInit {
 
   drop(event: CdkDragDrop<string[]>) {
     const { previousContainer, container, previousIndex, currentIndex } = event;
-    if (previousContainer === container) {
-      // TODO: Make api Call to update Candidate.position
-      moveItemInArray(container.data, previousIndex, currentIndex);
-    } else {
-      // TODO: Make api Call to update Candidate.stage
-      transferArrayItem(
-        previousContainer.data,
-        container.data,
-        previousIndex,
-        currentIndex
-      );
-    }
+
+    // TODO: Make api Call to update Candidate
+    previousContainer === container
+      ? moveItemInArray(container.data, previousIndex, currentIndex)
+      : transferArrayItem(previousContainer.data, container.data, previousIndex, currentIndex);
   }
-
-  filter(tags: Set<string>) {
-    Object.keys(this.columns).forEach(key => {
-      this.columns[key] = this.columns[key].filter(candidate => {
-        for (const tag of tags) {
-          if (candidate.tags.has(tag)) {
-            return true;
-          }
-        }
-        return false;
-      })
-    })
-  }
-}
-
-function toCandidate(apiCandidate): Candidate {
-  return {
-    ...apiCandidate,
-    tags: new Set(apiCandidate.tags),
-  };
-}
-
-function candidateHaveTags(candidate: Candidate, tags: string[]) {
-  for (const tag of tags) {
-    if (candidate.tags.has(tag)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-interface Candidate {
-  id: string;
-  firstName: string;
-  lastName: string;
-  picture: string;
-  job: string;
-  location: string;
-  linkedin: string;
-  github: string;
-  twitter: string;
-  tags: Set<string>;
-  stage: string;
 }
