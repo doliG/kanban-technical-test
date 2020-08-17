@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   CdkDragDrop,
@@ -10,6 +10,7 @@ import {
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.sass'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
   title = 'kanban';
@@ -18,10 +19,10 @@ export class AppComponent implements OnInit {
   availableTags: Set<string> = new Set();
   columns: {
     [name: string]: Candidate[];
-  };
+  } = {};
   visibleItems = 15;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.http
@@ -34,6 +35,7 @@ export class AppComponent implements OnInit {
             this.availableTags.add(tag);
           }
         }
+        this.cdr.markForCheck();
       });
   }
 
@@ -89,10 +91,12 @@ function toCandidate(apiCandidate): Candidate {
 }
 
 function candidateHaveTags(candidate: Candidate, tags: string[]) {
-  for (const tag of tags)
-    if (candidate.tags.has(tag))
-      return true
-  return false
+  for (const tag of tags) {
+    if (candidate.tags.has(tag)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 interface Candidate {
